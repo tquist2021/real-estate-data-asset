@@ -54,7 +54,7 @@ def write_datalake(df: pd.DataFrame, med: str, table_name: str):
         - prefix: for file name ex: brnz, slvr, gold.
         - table_name: name of the table (file) that will be written
     """
-    output_path = f"{data_lake_fp}/{med}/real-estate-data-asset/{med}_{table_name}.csv"
+    output_path = f"{data_lake_fp}/{med}/{med}_{table_name}.csv"
     try:
         df.to_csv(output_path, index=False)
         logger.info(f"Data successfully written to {output_path}")
