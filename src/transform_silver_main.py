@@ -145,5 +145,5 @@ try:
 except Exception as e:
     logger.exception("❌ write failed: {e}")
 
-# -------------------- macro_controls table --------------------
+# -------------------- end job --------------------
 logger.info("Job Ending")
