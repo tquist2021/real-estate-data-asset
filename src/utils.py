@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 # -------------------- Load Environment --------------------
 load_dotenv()
 API_KEY = os.getenv("FRED_API_KEY")
-file_path = os.getenv("file_path")
+data_lake_file_path = os.getenv("data_lake_file_path")
 
 
 # -------------------- Initialize FRED --------------------
@@ -51,12 +51,46 @@ def write_datalake(df: pd.DataFrame, med: str, table_name: str):
     Parameters: 
         - df: pandas dataframe to be written
         - med: step in medallion architecture (bronze, silver, or gold.)
+        - prefix: for file name ex: brnz, slvr, gold.
         - table_name: name of the table (file) that will be written
     """
-    output_path = f"{file_path}/{med}/{table_name}.csv"
+    output_path = f"{data_lake_file_path}/{med}/{med}_{table_name}.csv"
     try:
         df.to_csv(output_path, index=False)
         logger.info(f"Data successfully written to {output_path}")
     except Exception as e:
         logger.exception(f"Failed to write data to CSV '{output_path}': {e}")
         raise
+
+def clean_data(df: pd.DataFrame, date_name: str, col_name: str) -> pd.DataFrame: 
+    """
+    Takes pandas DataFrame and drops duplicates, drops null values, assigns column names,
+    Parameters: 
+        - df str: name of DataFrame to be cleaned. 
+    """ 
+    df = df.drop_duplicates()
+    df = df.dropna()
+
+    cols = [x for x in df.columns]
+    df = df.rename(
+        columns = {
+            cols[0] : date_name,
+            cols[1] : col_name
+        }
+    )
+
+    df[date_name] = pd.to_datetime(df[date_name])
+
+    return df
+
+def get_table_names(dir: str):
+    """
+    Returns a list of table (file) names that are in a directory.
+
+    Parameters:
+        - dir: str - folder where tables are located
+    """
+    files = []
+    files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
+
+    return files
