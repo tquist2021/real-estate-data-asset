@@ -17,7 +17,7 @@ logger = logging.getLogger(__name__)
 # -------------------- Load Environment --------------------
 load_dotenv()
 API_KEY = os.getenv("FRED_API_KEY")
-data_lake_file_path = os.getenv("data_lake_file_path")
+data_lake_fp = os.getenv("data_lake_fp")
 
 
 # -------------------- Initialize FRED --------------------
@@ -54,7 +54,7 @@ def write_datalake(df: pd.DataFrame, med: str, table_name: str):
         - prefix: for file name ex: brnz, slvr, gold.
         - table_name: name of the table (file) that will be written
     """
-    output_path = f"{data_lake_file_path}/{med}/{med}_{table_name}.csv"
+    output_path = f"{data_lake_fp}/{med}/real-estate-data-asset/{med}_{table_name}.csv"
     try:
         df.to_csv(output_path, index=False)
         logger.info(f"Data successfully written to {output_path}")
@@ -94,3 +94,4 @@ def get_table_names(dir: str):
     files = [f for f in os.listdir(dir) if os.path.isfile(os.path.join(dir, f))]
 
     return files
+
