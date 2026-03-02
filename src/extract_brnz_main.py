@@ -14,7 +14,7 @@ logger = logging.getLogger(__name__)
 
 logger.info("Starting Bronze Extract")
 try:
-    ## Housing Prices
+    ## Housing Price Indexes
     logger.info("Starting Housing Prices")
 
     case_shil_price = get_brnz_extract("CSUSHPINSA")
